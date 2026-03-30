@@ -8,7 +8,7 @@ const CARDS_DATA = [
   {
     "id": "02",
     "image": "images/02.jpg",
-    "text": "投降書一半",
+    "text": "投降輸一半",
     "desc": "香港麻將的規則是投降輸一半"
   },
   {
@@ -134,7 +134,7 @@ const CARDS_DATA = [
   {
     "id": "23",
     "image": "images/23.jpg",
-    "text": "奔來手文泰來",
+    "text": "奔雷手文泰來",
     "desc": "你是不是不把我放在眼裡"
   },
   {
@@ -176,7 +176,7 @@ const CARDS_DATA = [
   {
     "id": "30",
     "image": "images/30.jpg",
-    "text": "曾經有一份真誠的愛情",
+    "text": "一份真誠的愛情",
     "desc": "我的答案是 一萬年"
   }
 ];
