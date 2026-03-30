@@ -64,7 +64,9 @@
         match: () => { playTone(523.25, 'sine', 0.1, 0.25); setTimeout(() => playTone(659.25, 'sine', 0.1, 0.25), 100); setTimeout(() => playTone(783.99, 'sine', 0.3, 0.25), 200); },
         mismatch: () => { playTone(200, 'triangle', 0.1, 0.25); setTimeout(() => playTone(150, 'triangle', 0.2, 0.25), 150); },
         win: () => { [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => setTimeout(() => playTone(f, 'square', 0.2, 0.2), i * 150)); },
-        click: () => playTone(600, 'sine', 0.05, 0.1)
+        click: () => playTone(600, 'sine', 0.05, 0.1),
+        pop: () => { playTone(400, 'sine', 0.1, 0.1); setTimeout(() => playTone(800, 'sine', 0.2, 0.1), 50); },
+        hover: () => playTone(1000, 'sine', 0.03, 0.06)
     };
 
     /* ==================== INIT ==================== */
@@ -102,6 +104,16 @@
                 }
             }
             if (e.target.tagName === 'BUTTON' || e.target.closest('button')) sfx.click();
+        });
+
+        // Hover sound for cards and buttons
+        document.body.addEventListener('mouseover', (e) => {
+            const el = e.target.closest('.gallery-card, .answer-card, .btn-difficulty, .btn-action, .btn-game, .btn-result, .tab-btn');
+            if (el && !el.dataset.hovered) {
+                sfx.hover();
+                el.dataset.hovered = 'true';
+                el.addEventListener('mouseleave', () => delete el.dataset.hovered, { once: true });
+            }
         });
 
         // Difficulty buttons
@@ -587,6 +599,7 @@
     window.viewOriginal = function(src) {
         const img = $('lightbox-img');
         if (img) {
+            sfx.pop();
             img.src = src;
             openModal(modals.lightbox);
         }
