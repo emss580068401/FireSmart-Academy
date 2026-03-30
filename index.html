@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="新竹縣政府消防局職安科 — 職安知識圖文配對記憶遊戲">
+    <title>🔥 職安大挑戰 — 新竹縣政府消防局</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+    <!-- Ambient Fire Particles -->
+    <div id="fire-particles"></div>
+
+    <!-- ========== START SCREEN ========== -->
+    <div id="start-screen" class="screen active">
+        <div class="start-content">
+            <div class="logo-area">
+                <div class="fire-icon"><img src="卡牌logo.png" alt="新竹縣消防局吉祥物"></div>
+                <h1>職安大挑戰</h1>
+                <p class="subtitle">新竹縣政府消防局 · 職安科</p>
+            </div>
+            <div class="difficulty-selector">
+                <h2>選擇難度</h2>
+                <div class="difficulty-grid">
+                    <button class="btn-difficulty" data-difficulty="easy" data-pairs="8" id="btn-diff-easy">
+                        <span class="diff-icon">🟢</span>
+                        <span class="diff-label">簡單</span>
+                        <span class="diff-info">8 組配對 · 16 張卡片</span>
+                    </button>
+                    <button class="btn-difficulty" data-difficulty="medium" data-pairs="12" id="btn-diff-medium">
+                        <span class="diff-icon">🟡</span>
+                        <span class="diff-label">中等</span>
+                        <span class="diff-info">12 組配對 · 24 張卡片</span>
+                    </button>
+                    <button class="btn-difficulty" data-difficulty="hard" data-pairs="18" id="btn-diff-hard">
+                        <span class="diff-icon">🔴</span>
+                        <span class="diff-label">困難</span>
+                        <span class="diff-info">18 組配對 · 36 張卡片</span>
+                    </button>
+                    <button class="btn-difficulty" data-difficulty="hell" data-pairs="30" id="btn-diff-hell">
+                        <span class="diff-icon">🔥</span>
+                        <span class="diff-label">地獄</span>
+                        <span class="diff-info">30 組配對 · 60 張卡片</span>
+                    </button>
+                </div>
+            </div>
+            <div class="start-actions">
+                <button class="btn-action" id="btn-leaderboard">🏆 榮譽榜</button>
+                <button class="btn-action" id="btn-gallery">📖 職安圖鑑</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== GAME SCREEN ========== -->
+    <div id="game-screen" class="screen">
+        <header class="game-header">
+            <div class="stat">⏱ <span id="timer">00:00</span></div>
+            <div class="stat">🃏 翻牌: <span id="flip-count">0</span></div>
+            <div class="stat">✅ 配對: <span id="match-count">0</span> / <span id="total-pairs">0</span></div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </header>
+        <div id="game-board" class="game-board"></div>
+        <footer class="game-footer">
+            <button class="btn-game" id="btn-restart">🔄 重新開始</button>
+            <button class="btn-game" id="btn-back-home">🏠 回主選單</button>
+        </footer>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="match-toast-container" id="toast-container"></div>
+
+    <!-- ========== RESULT MODAL ========== -->
+    <div class="modal-overlay" id="result-modal">
+        <div class="modal-content result-content">
+            <h2><span class="emoji">🎉</span> 恭喜完成！</h2>
+            <div class="result-stats">
+                <div class="result-stat">
+                    <span class="label">完成時間</span>
+                    <span class="value" id="result-time">00:00</span>
+                </div>
+                <div class="result-stat">
+                    <span class="label">翻牌次數</span>
+                    <span class="value" id="result-flips">0</span>
+                </div>
+                <div class="result-stat">
+                    <span class="label">難度</span>
+                    <span class="value" id="result-difficulty">簡單</span>
+                </div>
+            </div>
+            <div class="leaderboard-entry" id="leaderboard-entry">
+                <p>🏆 恭喜進入榮譽榜！</p>
+                <input type="text" id="player-name" placeholder="輸入您的暱稱（最多10字）" maxlength="10">
+                <button class="btn-save" id="btn-save-score">儲存成績</button>
+            </div>
+            <div class="result-actions">
+                <button class="btn-result" id="btn-view-answers">📖 查看本局配對解答</button>
+                <button class="btn-result primary" id="btn-play-again">🔄 再玩一次</button>
+                <button class="btn-result" id="btn-result-home">🏠 回主選單</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ANSWERS MODAL ========== -->
+    <div class="modal-overlay" id="answers-modal">
+        <div class="modal-content answers-content">
+            <button class="btn-close-modal" id="btn-close-answers">✕</button>
+            <h2><span class="emoji">📖</span> 本局配對解答</h2>
+            <div class="answers-grid" id="answers-grid"></div>
+        </div>
+    </div>
+
+    <!-- ========== LEADERBOARD MODAL ========== -->
+    <div class="modal-overlay" id="leaderboard-modal">
+        <div class="modal-content leaderboard-content">
+            <button class="btn-close-modal" id="btn-close-leaderboard">✕</button>
+            <h2><span class="emoji">🏆</span> 榮譽榜</h2>
+            <div class="leaderboard-tabs">
+                <button class="tab-btn active" data-tab="easy">🟢 簡單</button>
+                <button class="tab-btn" data-tab="medium">🟡 中等</button>
+                <button class="tab-btn" data-tab="hard">🔴 困難</button>
+                <button class="tab-btn" data-tab="hell">🔥 地獄</button>
+            </div>
+            <div id="leaderboard-body"></div>
+            <button class="btn-clear-board" id="btn-clear-leaderboard">🗑 清除本難度記錄</button>
+        </div>
+    </div>
+
+    <!-- ========== GALLERY MODAL ========== -->
+    <div class="modal-overlay" id="gallery-modal">
+        <div class="modal-content gallery-content">
+            <button class="btn-close-modal" id="btn-close-gallery">✕</button>
+            <h2><span class="emoji">🚒</span> 職安圖鑑</h2>
+            <p class="gallery-subtitle">全部 30 組職安知識圖文對照</p>
+            <div class="gallery-grid" id="gallery-grid"></div>
+        </div>
+    </div>
+
+    <!-- ========== LIGHTBOX MODAL ========== -->
+    <div class="modal-overlay lightbox-overlay" id="lightbox-modal">
+        <button class="btn-close-modal" id="btn-close-lightbox">✕</button>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="原始尺寸圖片">
+        </div>
+    </div>
+
+    <canvas id="celebration-canvas"></canvas>
+
+    <!-- ========== AUDIO ========== -->
+    <audio id="bgm" src="The_High_Pass.mp3" loop preload="auto"></audio>
+
+    <script src="data/cards.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
