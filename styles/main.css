@@ -1262,8 +1262,8 @@ body {
     .game-board.diff-medium { grid-template-columns: repeat(3, 1fr); }
     /* 困難模式 36張→ 4欄 = 9行，維持原設定避免過度捲動 */
     .game-board.diff-hard   { grid-template-columns: repeat(4, 1fr); gap: 4px; }
-    /* 地獄模式 60張→ 5欄 = 12行，卡片進入可視範圍 */
-    .game-board.diff-hell   { grid-template-columns: repeat(5, 1fr); gap: 3px; }
+    /* 地獄模式 60張→ 4欄 = 15行，調整為使用者要求的欄數 */
+    .game-board.diff-hell   { grid-template-columns: repeat(4, 1fr); gap: 3px; }
 
     /* 卡片正面文字調整 */
     .card-front.image-face .img-badge {
