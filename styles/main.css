@@ -1257,9 +1257,10 @@ body {
     }
 
     /* MOBILE 欄數設計：確保小手指可點擊 */
-    .game-board.diff-easy   { grid-template-columns: repeat(4, 1fr); max-width: 100%; }
-    .game-board.diff-medium { grid-template-columns: repeat(4, 1fr); }
-    /* 困難模式 36張→ 4欄 = 9行，卡片庺度可接受 */
+    /* 簡單/中等 → 3欄：16/24張卡片行數可控，圖文更清晰易識 */
+    .game-board.diff-easy   { grid-template-columns: repeat(3, 1fr); max-width: 100%; }
+    .game-board.diff-medium { grid-template-columns: repeat(3, 1fr); }
+    /* 困難模式 36張→ 4欄 = 9行，維持原設定避免過度捲動 */
     .game-board.diff-hard   { grid-template-columns: repeat(4, 1fr); gap: 4px; }
     /* 地獄模式 60張→ 5欄 = 12行，卡片進入可視範圍 */
     .game-board.diff-hell   { grid-template-columns: repeat(5, 1fr); gap: 3px; }
@@ -1380,7 +1381,9 @@ body {
     .game-header { padding: 0.4rem; }
     .stat { font-size: 0.68rem; }
 
-    /* 困難和地獄在極小螢幕全部縮為 4欄 */
+    /* 極小螢幕：簡單/中等維持3欄，困難/地獄縮為4欄 */
+    .game-board.diff-easy,
+    .game-board.diff-medium { grid-template-columns: repeat(3, 1fr); gap: 4px; }
     .game-board.diff-hard,
     .game-board.diff-hell { grid-template-columns: repeat(4, 1fr); gap: 3px; }
 
