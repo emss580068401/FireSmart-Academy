@@ -2,8 +2,13 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="新竹縣政府消防局職安科 — 職安知識圖文配對記憶遊戲">
+    <meta name="theme-color" content="#1a0a0a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="消防智多星">
     <title>🔥 消防智多星 — 職安大挑戰</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +19,11 @@
 
     <!-- Ambient Fire Particles -->
     <div id="fire-particles"></div>
+
+    <!-- BGM Toggle Button (固定浮動，任何畫面皆可操作) -->
+    <button id="bgm-toggle" class="bgm-toggle-btn" title="切換背景音樂" aria-label="切換背景音樂">
+        <span class="bgm-icon">🔊</span>
+    </button>
 
     <!-- ========== START SCREEN ========== -->
     <div id="start-screen" class="screen active">

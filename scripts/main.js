@@ -92,29 +92,81 @@
 
     /* ==================== EVENT BINDING ==================== */
     function bindEvents() {
-        // UI Sounds & Auto-play BGM
+        // UI Sounds & BGM 系統
         let bgmStarted = false;
-        document.body.addEventListener('click', (e) => {
-            if (!bgmStarted) {
-                const bgm = $('bgm');
-                if (bgm) {
-                    bgm.volume = 0.3; // Limit BGM volume to not overpower SFX
-                    bgm.play().catch(err => console.log('BGM Autoplay prevented:', err));
-                    bgmStarted = true;
-                }
+        const bgmEl = $('bgm');
+        const bgmBtn = $('bgm-toggle');
+        const bgmIcon = bgmBtn ? bgmBtn.querySelector('.bgm-icon') : null;
+
+        // 讀取上次靜音狀態（預設播放）
+        let isBgmMuted = localStorage.getItem('bgm_muted') === 'true';
+
+        function updateBgmUI() {
+            if (!bgmBtn) return;
+            if (isBgmMuted) {
+                bgmBtn.classList.add('muted');
+                if (bgmIcon) bgmIcon.textContent = '🔇';
+                bgmBtn.title = '開啟背景音樂';
+                bgmBtn.setAttribute('aria-label', '開啟背景音樂');
+            } else {
+                bgmBtn.classList.remove('muted');
+                if (bgmIcon) bgmIcon.textContent = '🔊';
+                bgmBtn.title = '關閉背景音樂';
+                bgmBtn.setAttribute('aria-label', '關閉背景音樂');
             }
+        }
+
+        function startBgmIfNeeded() {
+            if (bgmStarted || !bgmEl || isBgmMuted) return;
+            bgmEl.volume = 0.3;
+            bgmEl.play().catch(err => console.log('BGM Autoplay prevented:', err));
+            bgmStarted = true;
+        }
+
+        // BGM 切換按鈕
+        if (bgmBtn) {
+            updateBgmUI(); // 初始 UI 同步
+
+            bgmBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // 不觸發全域 click 事件
+                isBgmMuted = !isBgmMuted;
+                localStorage.setItem('bgm_muted', isBgmMuted);
+
+                if (bgmEl) {
+                    if (isBgmMuted) {
+                        bgmEl.pause();
+                    } else {
+                        bgmEl.volume = 0.3;
+                        bgmEl.play().catch(() => {});
+                        bgmStarted = true;
+                    }
+                }
+                sfx.click();
+                updateBgmUI();
+            });
+        }
+
+        // 第一次使用者互動 → 嘗試播放 BGM（若未靜音）
+        document.body.addEventListener('click', (e) => {
+            // BGM 按鈕已有專屬 listener，此處跳過
+            if (e.target.closest('#bgm-toggle')) return;
+            startBgmIfNeeded();
             if (e.target.tagName === 'BUTTON' || e.target.closest('button')) sfx.click();
         });
 
         // Hover sound for cards and buttons
-        document.body.addEventListener('mouseover', (e) => {
-            const el = e.target.closest('.gallery-card, .answer-card, .btn-difficulty, .btn-action, .btn-game, .btn-result, .tab-btn');
-            if (el && !el.dataset.hovered) {
-                sfx.hover();
-                el.dataset.hovered = 'true';
-                el.addEventListener('mouseleave', () => delete el.dataset.hovered, { once: true });
-            }
-        });
+        // 手機觸控設備不加載 hover 音效，避免誤觸造成連續音效
+        const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+        if (!isTouchDevice) {
+            document.body.addEventListener('mouseover', (e) => {
+                const el = e.target.closest('.gallery-card, .answer-card, .btn-difficulty, .btn-action, .btn-game, .btn-result, .tab-btn');
+                if (el && !el.dataset.hovered) {
+                    sfx.hover();
+                    el.dataset.hovered = 'true';
+                    el.addEventListener('mouseleave', () => delete el.dataset.hovered, { once: true });
+                }
+            });
+        }
 
         // Difficulty buttons
         document.querySelectorAll('.btn-difficulty').forEach(btn => {
@@ -314,6 +366,11 @@
         el.appendChild(inner);
 
         el.addEventListener('click', () => handleCardClick(el));
+
+        // 手機防長按釋出系統選單，不干擾遊戲
+        el.addEventListener('contextmenu', (e) => e.preventDefault());
+        el.style.userSelect = 'none';
+        el.style.webkitUserSelect = 'none';
 
         return el;
     }
@@ -703,7 +760,9 @@
     /* ==================== FIRE PARTICLES (AMBIENT) ==================== */
     function createFireParticles() {
         const container = $('fire-particles');
-        const count = 25;
+        // 手機處理器弱，溛少粒子省電
+        const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+        const count = isTouchDevice ? 8 : 25;
 
         for (let i = 0; i < count; i++) {
             const particle = document.createElement('div');

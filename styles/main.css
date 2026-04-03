@@ -62,6 +62,10 @@ body {
     overflow-x: hidden;
     touch-action: manipulation;
     position: relative;
+    /* iPhone 劇海安全區域 */
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
 }
 
 ::-webkit-scrollbar {
@@ -710,13 +714,14 @@ body {
 
 .btn-close-modal {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: transparent;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(0, 0, 0, 0.06);
     border: 1px solid var(--glass-border);
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
+    /* 觸控目標最小 44px */
+    width: 44px;
+    height: 44px;
     color: var(--text-muted);
     font-size: 1.1rem;
     cursor: pointer;
@@ -725,6 +730,8 @@ body {
     align-items: center;
     justify-content: center;
     font-family: var(--font-main);
+    /* 確保點擊區域將說明文字推開 */
+    z-index: 10;
 }
 
 .btn-close-modal:hover {
@@ -1160,143 +1167,231 @@ body {
 }
 
 /* ==================== RESPONSIVE ==================== */
+
+/* --- 手機與平板 (768px) --- */
 @media (max-width: 768px) {
-    .logo-area h1 {
-        font-size: 2rem;
-    }
 
-    .fire-icon {
-        font-size: 3rem;
-    }
+    /* 開始画面 */
+    #start-screen { padding: 1.25rem 1rem; }
 
-    .difficulty-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
+    .start-content { padding: 0 0.25rem; }
 
-    .game-header {
-        gap: 1rem;
-        padding: 0.8rem 1rem;
-    }
-
-    .stat {
-        font-size: 0.85rem;
-    }
-
-    .game-board {
-        padding: 0.8rem;
-        gap: 6px;
-    }
-
-    .game-board.cols-6 {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-    .game-board.cols-10 {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 5px;
-    }
-
-    .card-back .back-icon {
-        font-size: 1.4rem;
-    }
-
-    .card-back .back-text {
-        font-size: 0.5rem;
-        letter-spacing: 1px;
-    }
-
-    .card-front.text-face .text-content {
-        font-size: 0.7rem;
-    }
-
-    .card-front.text-face .text-icon {
-        font-size: 1rem;
-    }
-
-    .modal-content {
-        padding: 1.5rem;
-        border-radius: 16px;
-    }
-
-    .result-stats {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-    }
-
-    .result-stat .value {
-        font-size: 1.1rem;
-    }
-
-    .gallery-grid,
-    .answers-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .match-toast-container {
-        bottom: 70px;
-    }
-}
-
-@media (max-width: 768px) {
-    .start-content {
-        padding: 0 0.5rem;
+    .logo-area {
+        margin-bottom: 1.5rem;
     }
 
     .logo-area h1 {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
         letter-spacing: 2px;
     }
 
-    .subtitle {
-        font-size: 0.85rem;
+    .fire-icon {
+        width: 90px;
+        height: 90px;
     }
 
+    .subtitle { font-size: 0.85rem; }
+
+    /* 難度選擇 */
     .difficulty-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 8px;
     }
 
+    .btn-difficulty {
+        padding: 0.85rem 0.5rem;
+        /* 確保最小點擊面積 */
+        min-height: 72px;
+    }
+
+    .btn-difficulty .diff-icon { font-size: 1.4rem; }
+    .btn-difficulty .diff-label { font-size: 0.9rem; }
+    .btn-difficulty .diff-info { font-size: 0.68rem; }
+
+    /* 開始畫面 Action 按鈕 */
     .start-actions {
         flex-direction: column;
+        gap: 8px;
     }
 
+    .btn-action {
+        min-height: 44px;
+        font-size: 0.95rem;
+    }
+
+    /* ==== 游戲 Header 精簡化 ==== */
+    .game-header {
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        justify-content: space-between;
+        /* 手機上和 header 小子 */
+        min-height: auto;
+    }
+
+    .stat {
+        font-size: 0.75rem;
+        gap: 0.2rem;
+        flex-shrink: 0;
+    }
+
+    .stat span {
+        /* 手機上數字更應該抬眼 */
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--fire-orange);
+    }
+
+    .progress-bar-container {
+        /* 手機全寬進度條，獨占一行 */
+        order: 10;
+        max-width: 100%;
+        flex-basis: 100%;
+        height: 3px;
+    }
+
+    /* ==== 游戲板卡片欄數优化 ==== */
     .game-board {
-        gap: 6px;
+        gap: 5px;
         padding: 0.5rem;
     }
 
-    /* MOBILE (Portrait Priority: taller rows) */
+    /* MOBILE 欄數設計：確保小手指可點擊 */
     .game-board.diff-easy   { grid-template-columns: repeat(4, 1fr); max-width: 100%; }
     .game-board.diff-medium { grid-template-columns: repeat(4, 1fr); }
-    .game-board.diff-hard   { grid-template-columns: repeat(6, 1fr); gap: 4px; }
-    .game-board.diff-hell   { grid-template-columns: repeat(6, 1fr); gap: 4px; }
+    /* 困難模式 36張→ 4欄 = 9行，卡片庺度可接受 */
+    .game-board.diff-hard   { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    /* 地獄模式 60張→ 5欄 = 12行，卡片進入可視範圍 */
+    .game-board.diff-hell   { grid-template-columns: repeat(5, 1fr); gap: 3px; }
 
+    /* 卡片正面文字調整 */
     .card-front.image-face .img-badge {
         font-size: 0.5rem;
         padding: 1px 4px;
     }
 
     .card-front.text-face .text-content {
+        font-size: 0.75rem;
+        line-height: 1.3;
+    }
+
+    .card-back .back-text {
+        font-size: 0.45rem;
+        letter-spacing: 1px;
+    }
+
+    /* 游戲底欄按鈕 */
+    .game-footer { padding: 0.5rem; gap: 8px; }
+
+    .btn-game {
+        min-height: 40px;
+        font-size: 0.82rem;
+        padding: 0.5rem 0.9rem;
+    }
+
+    /* Toast 位置調整，避免避蓋底部按鈕 */
+    .match-toast-container { bottom: 60px; }
+
+    /* Modal 手機全寬 */
+    .modal-overlay {
+        padding: 0.5rem;
+        align-items: flex-end; /* 手機版從底部滑出 */
+    }
+
+    .modal-content {
+        padding: 1.25rem;
+        border-radius: 20px 20px 12px 12px;
+        max-height: 92vh;
+        animation: modal-slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-content h2 {
+        font-size: 1.35rem;
+        margin-bottom: 1rem;
+        /* 標題與關閉按鈕避免重疊 */
+        padding-right: 2.5rem;
+    }
+
+    /* 結果模態 */
+    .result-content { max-width: 100%; }
+
+    .result-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .result-stat {
+        padding: 0.75rem 0.4rem;
+    }
+
+    .result-stat .label { font-size: 0.68rem; }
+    .result-stat .value { font-size: 1rem; }
+
+    .leaderboard-entry { padding: 1rem; }
+
+    .btn-result {
+        padding: 0.8rem 0.75rem;
+        min-height: 44px;
         font-size: 0.9rem;
     }
 
-    .card-front.text-face .text-icon {
-        font-size: 0.8rem;
-        margin-bottom: 2px;
-    }
+    /* 排行榜 */
+    .leaderboard-content { max-width: 100%; }
 
-    .leaderboard-table {
-        font-size: 0.8rem;
-    }
+    .leaderboard-table { font-size: 0.78rem; }
 
     .leaderboard-table thead th {
         padding: 0.4rem;
-        font-size: 0.65rem;
+        font-size: 0.62rem;
     }
 
     .leaderboard-table tbody td {
-        padding: 0.5rem 0.4rem;
+        padding: 0.5rem 0.35rem;
     }
+
+    /* 展示詛與解答列 */
+    .gallery-content,
+    .answers-content {
+        max-width: 100%;
+    }
+
+    .gallery-grid,
+    .answers-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .tab-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        min-height: 40px;
+    }
+}
+
+/* --- 極小手機 (375px) --- */
+@media (max-width: 375px) {
+    .logo-area h1 { font-size: 1.5rem; }
+
+    .fire-icon { width: 70px; height: 70px; }
+
+    .btn-difficulty .diff-label { font-size: 0.82rem; }
+    .btn-difficulty .diff-info { font-size: 0.62rem; }
+
+    .game-header { padding: 0.4rem; }
+    .stat { font-size: 0.68rem; }
+
+    /* 困難和地獄在極小螢幕全部縮為 4欄 */
+    .game-board.diff-hard,
+    .game-board.diff-hell { grid-template-columns: repeat(4, 1fr); gap: 3px; }
+
+    .modal-content { padding: 1rem; }
+    .result-stats { gap: 4px; }
+}
+
+/* 模態從底部滑出動畫 (手機標气) */
+@keyframes modal-slide-up {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ==================== DESKTOP LARGE FONTS ==================== */
@@ -1434,5 +1529,87 @@ body {
 
     .start-content {
         max-width: 620px;
+    }
+}
+
+/* ==================== BGM TOGGLE BUTTON ==================== */
+.bgm-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 500;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(234, 88, 12, 0.5);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 16px rgba(234, 88, 12, 0.2),
+                0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.2s ease,
+                border-color 0.2s ease,
+                opacity 0.2s ease;
+    animation: bgm-pulse 3s ease-in-out infinite;
+}
+
+.bgm-toggle-btn:hover {
+    transform: scale(1.15);
+    border-color: var(--fire-orange);
+    box-shadow: 0 6px 24px rgba(234, 88, 12, 0.4),
+                0 0 0 4px rgba(234, 88, 12, 0.1);
+}
+
+.bgm-toggle-btn:active {
+    transform: scale(0.9);
+}
+
+/* 靜音狀態：灰化 + 停止脈衝 */
+.bgm-toggle-btn.muted {
+    border-color: rgba(148, 163, 184, 0.4);
+    background: rgba(241, 245, 249, 0.85);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    animation: none;
+    opacity: 0.7;
+}
+
+.bgm-toggle-btn.muted:hover {
+    opacity: 1;
+    border-color: rgba(100, 116, 139, 0.6);
+}
+
+@keyframes bgm-pulse {
+    0%, 100% {
+        box-shadow: 0 4px 16px rgba(234, 88, 12, 0.2),
+                    0 0 0 0 rgba(234, 88, 12, 0.25);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(234, 88, 12, 0.3),
+                    0 0 0 8px rgba(234, 88, 12, 0);
+    }
+}
+
+/* iPhone Safe Area 適配 */
+@supports (padding: env(safe-area-inset-bottom)) {
+    .bgm-toggle-btn {
+        bottom: calc(20px + env(safe-area-inset-bottom));
+        right: calc(20px + env(safe-area-inset-right));
+    }
+}
+
+/* 手機版縮小 */
+@media (max-width: 768px) {
+    .bgm-toggle-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 1.15rem;
+        bottom: 16px;
+        right: 16px;
     }
 }
